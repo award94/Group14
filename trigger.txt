@@ -1,0 +1,19 @@
+CREATE TRIGGER shadySale
+ON PURCHASE
+AFTER DELETE, INSERT, UPDATE 
+AS
+IF EXISTS ( SELECT * 
+			FROM PURCHASE AS P
+			WHERE P.Time < '9:00' OR P.Time > '18:00')
+RAISERROR ('After hours sale', 16, 1);
+GO
+
+-------------------------------------------------------------------------
+
+CREATE TRIGGER ANIMAL_IN_CLOSED_ATTRACTION
+ON ANIMAL
+AFTER UPDATE, INSERT
+AS 
+IF EXISTS (SELECT * FROM ANIMAL AS A, ATTRACTION AS N WHERE A.Attraction = N.ID AND N.Open_closed = 0)
+RAISERROR('Animal inserted into closed Attraction', 16, 1);
+GO
